@@ -55,25 +55,27 @@ void write_to_csv(const ReceiverDetails& receiver) {
         return;
     }
 
-    // Check if the file is empty, and write header if necessary
-    if (csvfile.tellp() == 0) {
-        csvfile << "ReceiverID,ReceiverName,ReceiverContact,OrganType,ReceiverAge,ReceiverBloodType,ReceiverAddress,ReceiverCity,ReceiverState,ReceiverCountry,ReceiverZipCode,ReceiverMedicalHistory,ReceiverInsurance,ReceiverConsentForm,ReceiverRegistrationDate\n";
-    }
+
 
     // Generate ReceiverID
     ReceiverDetails updatedReceiver = receiver;
     updatedReceiver.ReceiverID = generate_receiver_id(updatedReceiver);
 
+    // Check if ReceiverID already exists
+    for (const auto& entry : receiverDatabase) {
+        if (entry.ReceiverID == updatedReceiver.ReceiverID) {
+            cout << "Your request is under process. A receiver with the same ReceiverID already exists." << endl;
+            return;
+        }
+    }
+
     // Get current date and time
     time_t now = time(0);
     tm *ltm = localtime(&now);
     stringstream registration_date;
-    registration_date << 1900 + ltm->tm_year << '-'
-                     << setw(2) << setfill('0') << 1 + ltm->tm_mon << '-'
-                     << setw(2) << setfill('0') << ltm->tm_mday << ' '
-                     << setw(2) << setfill('0') << ltm->tm_hour << ':'
-                     << setw(2) << setfill('0') << ltm->tm_min << ':'
-                     << setw(2) << setfill('0') << ltm->tm_sec;
+    registration_date << setw(2) << setfill('0') << ltm->tm_mday << '/'
+                     << setw(2) << setfill('0') << 1 + ltm->tm_mon << '/'
+                     << 1900 + ltm->tm_year;
 
     updatedReceiver.ReceiverRegistrationDate = registration_date.str();
 
