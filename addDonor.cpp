@@ -2,180 +2,167 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <ctime>   // For time functions
+#include <iomanip> // For date/time formatting
+#include <vector>
 
-struct Donor {
-    std::string name;
-    std::string organType;
-    std::string contact;
-    int age;
-    std::string bloodType;
-    std::string regDate;
-    std::string city;
-    std::string state;
-    std::string country;
-    std::string address;
-    std::string zipCode;
-    std::string medicalHistory;
-    std::string insurance;
-    std::string consentForm;
+using namespace std;
+
+const string DONOR_CSV_FILE_PATH = "donor.csv";
+
+struct DonorDetails {
+    string DonorID;
+    string DonorName;
+    string OrganType;
+    string DonorContact;
+    string DonorAge;
+    string DonorBloodType;
+    string DonorRegistrationDate;
+    string DonorCity;
+    string DonorState;
+    string DonorCountry;
+    string DonorAddress;
+    string DonorZipCode;
+    string DonorMedicalHistory;
+    string DonorInsurance;
+    string DonorConsentForm;
 };
 
-void registerDonor(std::ofstream& file, Donor& newDonor);
-void printDonorDetails(const Donor& donor);
-bool confirmRegistration();
-void runDonorRegistrationSystem();
+vector<DonorDetails> donorDatabase;  // Vector to store donor details
 
-int main() {
-    std::cout << "Do you want to register as a donor? (Y/N): ";
-    char registrationChoice;
-    std::cin >> registrationChoice;
+string generate_donor_id(const DonorDetails& donor) {
+    // Extract relevant components for DonorID
+    string first_letter = donor.DonorName.substr(0, 1);
+    string last_letter = donor.DonorName.substr(donor.DonorName.length() - 1, 1);
+    string contact_digits = donor.DonorContact.substr(donor.DonorContact.length() - 2, 2);
+    string organ_blood_type = donor.OrganType.substr(0, 1) + donor.DonorBloodType.substr(0, 1);
 
-    if (registrationChoice == 'Y' || registrationChoice == 'y') {
-        system("CLS");
-        system("color 3F"); // Change console color
+    // Combine components to form DonorID
+    string donor_id = first_letter + last_letter + contact_digits + organ_blood_type;
 
-        std::ofstream file("donor.csv", std::ios::app);
-        if (!file.is_open()) {
-            std::cerr << "Error opening donor.csv for writing.\n";
-            return 1;
-        }
-
-        runDonorRegistrationSystem();
-
-        file.close();
-        std::cout << "Registered successfully!\n";
-        system("CLS");
-        system("color 2F"); // Change console color to default
-
-        std::cout << "Do you want to go to the Donor Registration System or Main Menu?\n";
-        std::cout << "1. Donor Registration System\n";
-        std::cout << "2. Main Menu\n";
-        int menuChoice;
-        std::cin >> menuChoice;
-
-        if (menuChoice == 1) {
-            runDonorRegistrationSystem();
-        } else if (menuChoice == 2) {
-            system("CLS");
-            system("welcome_page.exe"); // Assuming welcome_page.exe is the main menu executable
-        } else {
-            std::cout << "Invalid choice. Returning to Main Menu.\n";
-            system("CLS");
-            system("welcome_page.exe"); // Assuming welcome_page.exe is the main menu executable
-        }
-    } else {
-        std::cout << "Returning to Main Menu.\n";
-        system("CLS");
-        system("welcome_page.exe"); // Assuming welcome_page.exe is the main menu executable
+    // Convert to uppercase
+    for (char &c : donor_id) {
+        c = toupper(c);
     }
 
-    return 0;
+    return donor_id;
 }
 
-void registerDonor(std::ofstream& file, Donor& newDonor) {
-    std::cout << "Enter donor details:\n";
-    std::cout << "Name: ";
-    std::cin >> newDonor.name;
-
-    std::cout << "Organ Type: ";
-    std::cin >> newDonor.organType;
-
-    std::cout << "Contact: ";
-    std::cin >> newDonor.contact;
-
-    std::cout << "Age: ";
-    std::cin >> newDonor.age;
-
-    std::cout << "Blood Type: ";
-    std::cin >> newDonor.bloodType;
-
-    std::cout << "Registration Date: ";
-    std::cin >> newDonor.regDate;
-
-    std::cout << "City: ";
-    std::cin >> newDonor.city;
-
-    std::cout << "State: ";
-    std::cin >> newDonor.state;
-
-    std::cout << "Country: ";
-    std::cin >> newDonor.country;
-
-    std::cout << "Address: ";
-    std::cin.ignore();
-    std::getline(std::cin, newDonor.address);
-
-    std::cout << "Zip Code: ";
-    std::cin >> newDonor.zipCode;
-
-    std::cout << "Medical History: ";
-    std::cin.ignore();
-    std::getline(std::cin, newDonor.medicalHistory);
-
-    std::cout << "Insurance: ";
-    std::cin >> newDonor.insurance;
-
-    std::cout << "Consent Form: ";
-    std::cin >> newDonor.consentForm;
-
-    // Print entered details for confirmation
-    printDonorDetails(newDonor);
-
-    // Ask for confirmation
-    if (confirmRegistration()) {
-        // Write details to the file
-        file << newDonor.name << "," << newDonor.organType << "," << newDonor.contact << ","
-             << newDonor.age << "," << newDonor.bloodType << ","
-             << newDonor.regDate << "," << newDonor.city << "," << newDonor.state << ","
-             << newDonor.country << "," << newDonor.address << "," << newDonor.zipCode << ","
-             << newDonor.medicalHistory << "," << newDonor.insurance << ","
-             << newDonor.consentForm << "\n";
-    }
-}
-
-void printDonorDetails(const Donor& donor) {
-    std::cout << "\nDonor Details:\n";
-    std::cout << "Name: " << donor.name << "\n";
-    std::cout << "Organ Type: " << donor.organType << "\n";
-    std::cout << "Contact: " << donor.contact << "\n";
-    std::cout << "Age: " << donor.age << "\n";
-    std::cout << "Blood Type: " << donor.bloodType << "\n";
-    std::cout << "Registration Date: " << donor.regDate << "\n";
-    std::cout << "City: " << donor.city << "\n";
-    std::cout << "State: " << donor.state << "\n";
-    std::cout << "Country: " << donor.country << "\n";
-    std::cout << "Address: " << donor.address << "\n";
-    std::cout << "Zip Code: " << donor.zipCode << "\n";
-    std::cout << "Medical History: " << donor.medicalHistory << "\n";
-    std::cout << "Insurance: " << donor.insurance << "\n";
-    std::cout << "Consent Form: " << donor.consentForm << "\n";
-}
-
-bool confirmRegistration() {
-    char confirmation;
-    std::cout << "\nDo you want to confirm your registration? (Y/N): ";
-    std::cin >> confirmation;
-
-    return (confirmation == 'Y' || confirmation == 'y');
-}
-
-void runDonorRegistrationSystem() {
-    
-    system("CLS");
-    system("color 3F");
-    Donor newDonor;
-    std::ofstream file("donor.csv", std::ios::app);
-
-    if (!file.is_open()) {
-        std::cerr << "Error opening donor.csv for writing.\n";
+void write_donor_to_csv(const DonorDetails& donor) {
+    ofstream csvfile(DONOR_CSV_FILE_PATH, ios::app);
+    if (!csvfile.is_open()) {
+        cerr << "Error: Could not open the Donor CSV file for writing." << endl;
         return;
     }
 
-    // Initialize the registration date (assuming the system date can be retrieved)
-    // Add other necessary initializations
-    // ...
+    
 
-    registerDonor(file, newDonor);
+    // Generate DonorID
+    DonorDetails updatedDonor = donor;
+    updatedDonor.DonorID = generate_donor_id(updatedDonor);
 
-    file.close();
+    // Check if DonorID already exists
+    for (const auto& entry : donorDatabase) {
+        if (entry.DonorID == updatedDonor.DonorID) {
+            cout << "Your donor request is under process. A donor with the same DonorID already exists." << endl;
+            return;
+        }
+    }
+
+    // Get current date and time
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
+    stringstream registration_date;
+    registration_date << setw(2) << setfill('0') << ltm->tm_mday << '/'
+                     << setw(2) << setfill('0') << 1 + ltm->tm_mon << '/'
+                     << 1900 + ltm->tm_year;
+
+    updatedDonor.DonorRegistrationDate = registration_date.str();
+
+    // Append the updated donor details to the CSV file
+    csvfile << updatedDonor.DonorID << ","
+            << updatedDonor.DonorName << ","
+            << updatedDonor.OrganType << ","
+            << updatedDonor.DonorContact << ","
+            << updatedDonor.DonorAge << ","
+            << updatedDonor.DonorBloodType << ","
+            << updatedDonor.DonorCity << ","
+            << updatedDonor.DonorState << ","
+            << updatedDonor.DonorCountry << ","
+            << updatedDonor.DonorAddress << ","
+            << updatedDonor.DonorZipCode << ","
+            << updatedDonor.DonorMedicalHistory << ","
+            << updatedDonor.DonorInsurance << ","
+            << updatedDonor.DonorConsentForm << ","
+            << updatedDonor.DonorRegistrationDate << "\n";
+
+    // Add the updated donor details to the in-memory database
+    donorDatabase.push_back(updatedDonor);
+
+    cout << "Donor registration successful. Details have been saved to " << DONOR_CSV_FILE_PATH << endl;
+}
+
+int main() {
+    DonorDetails donor;
+
+    cout << "Welcome to Organ Donor Registration" << endl;
+
+    cout << "Register as an organ donor? (yes/no): ";
+    string response;
+    cin >> response;
+
+    if (response == "yes") {
+        cout << "Enter Donor Name: ";
+        cin.ignore();
+        getline(cin, donor.DonorName);
+
+        cout << "Enter Organ Type: ";
+        getline(cin, donor.OrganType);
+
+        cout << "Enter Donor Contact: ";
+        getline(cin, donor.DonorContact);
+
+        cout << "Enter Donor Age: ";
+        getline(cin, donor.DonorAge);
+
+        cout << "Enter Donor Blood Type: ";
+        getline(cin, donor.DonorBloodType);
+
+        cout << "Enter Donor City: ";
+        getline(cin, donor.DonorCity);
+
+        cout << "Enter Donor State: ";
+        getline(cin, donor.DonorState);
+
+        cout << "Enter Donor Country: ";
+        getline(cin, donor.DonorCountry);
+
+        cout << "Enter Donor Address: ";
+        getline(cin, donor.DonorAddress);
+
+        cout << "Enter Donor Zip Code: ";
+        getline(cin, donor.DonorZipCode);
+
+        cout << "Enter Donor Medical History: ";
+        getline(cin, donor.DonorMedicalHistory);
+
+        cout << "Enter Donor Insurance: ";
+        getline(cin, donor.DonorInsurance);
+
+        cout << "Enter Donor Consent Form: ";
+        getline(cin, donor.DonorConsentForm);
+
+        // Write donor details to CSV file and update in-memory database
+        write_donor_to_csv(donor);
+    } else {
+        cout << "Donor registration cancelled. Goodbye!" << endl;
+    }
+
+    // Access in-memory database (vector) if needed
+    for (const auto& entry : donorDatabase) {
+        // Do something with each entry in the in-memory database
+        cout << "DonorID: " << entry.DonorID << ", DonorName: " << entry.DonorName << endl;
+    }
+
+    return 0;
 }
