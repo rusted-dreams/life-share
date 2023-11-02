@@ -6,24 +6,24 @@
 
 using namespace std;
 
-// Structure to represent a receiver
-struct Receiver {
+// Structure to represent a donor
+struct Donor {
     string ID;
     string Name;
-    string Contact;
     string OrganType;
+    string Contact;
     string Age;
     string BloodType;
-    string Address;
     string City;
     string State;
     string Country;
+    string Address;
     string ZipCode;
     string MedicalHistory;
     string Insurance;
     string ConsentForm;
     string RegistrationDate;
-    Receiver* next;
+    Donor* next;
 };
 
 // Helper function to normalize strings for comparison
@@ -36,19 +36,19 @@ string normalizeString(const string& input) {
     return result;
 }
 
-// Create a new receiver node and add it to the end of the linked list
-Receiver* createReceiver(Receiver* head, const string& id, const string& name, const string& contact, const string& organType, const string& age, const string& bloodType, const string& address, const string& city, const string& state, const string& country, const string& zipCode, const string& medicalHistory, const string& insurance, const string& consentForm, const string& registrationDate) {
-    Receiver* newNode = new Receiver;
+// Create a new donor node and add it to the end of the linked list
+Donor* createDonor(Donor* head, const string& id, const string& name, const string& organType, const string& contact, const string& age, const string& bloodType, const string& city, const string& state, const string& country, const string& address, const string& zipCode, const string& medicalHistory, const string& insurance, const string& consentForm, const string& registrationDate) {
+    Donor* newNode = new Donor;
     newNode->ID = id;
     newNode->Name = name;
-    newNode->Contact = contact;
     newNode->OrganType = organType;
+    newNode->Contact = contact;
     newNode->Age = age;
     newNode->BloodType = bloodType;
-    newNode->Address = address;
     newNode->City = city;
     newNode->State = state;
     newNode->Country = country;
+    newNode->Address = address;
     newNode->ZipCode = zipCode;
     newNode->MedicalHistory = medicalHistory;
     newNode->Insurance = insurance;
@@ -60,7 +60,7 @@ Receiver* createReceiver(Receiver* head, const string& id, const string& name, c
         return newNode;
     }
 
-    Receiver* current = head;
+    Donor* current = head;
     while (current->next != nullptr) {
         current = current->next;
     }
@@ -69,10 +69,10 @@ Receiver* createReceiver(Receiver* head, const string& id, const string& name, c
     return head;
 }
 
-// Search for matching receivers and print the results
-void searchAndPrintMatches(Receiver* head, const string& organType, const string& bloodType, const string& city) {
+// Search for matching donors and print the results
+void searchAndPrintMatches(Donor* head, const string& organType, const string& bloodType, const string& city) {
     if (head == nullptr) {
-        cout << "No matching receivers found." << endl;
+        cout << "No matching donors found." << endl;
         return;
     }
 
@@ -80,18 +80,18 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
     string normalizedBloodType = normalizeString(bloodType);
     string normalizedCity = normalizeString(city);
 
-    Receiver* current = head;
+    Donor* current = head;
     bool matchFound = false;
 
     while (current != nullptr) {
-        string receiverOrganType = normalizeString(current->OrganType);
-        string receiverBloodType = normalizeString(current->BloodType);
-        string receiverCity = normalizeString(current->City);
+        string donorOrganType = normalizeString(current->OrganType);
+        string donorBloodType = normalizeString(current->BloodType);
+        string donorCity = normalizeString(current->City);
 
-        if (receiverOrganType.find(normalizedOrganType) != string::npos &&
-            receiverBloodType.find(normalizedBloodType) != string::npos &&
-            receiverCity.find(normalizedCity) != string::npos) {
-            cout << "Receiver ID: " << current->ID << endl;
+        if (donorOrganType.find(normalizedOrganType) != string::npos &&
+            donorBloodType.find(normalizedBloodType) != string::npos &&
+            donorCity.find(normalizedCity) != string::npos) {
+            cout << "Donor ID: " << current->ID << endl;
             cout << "Name: " << current->Name << endl;
             cout << "Organ Type: " << current->OrganType << endl;
             cout << "Blood Type: " << current->BloodType << endl;
@@ -114,51 +114,51 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
     }
 
     if (!matchFound) {
-        cout << "No matching receivers found." << endl;
+        cout << "No matching donors found." << endl;
     }
 }
 
 int main() {
-    Receiver* receiverList = nullptr;
+    Donor* donorList = nullptr;
 
-    // Load data from receiver.csv file
-    ifstream receiverFile("receiver.csv");
+    // Load data from donor.csv file
+    ifstream donorFile("donor.csv");
 
-    if (!receiverFile.is_open()) {
+    if (!donorFile.is_open()) {
         cout << "Error: Unable to open CSV file." << endl;
         return 1;
     }
 
     string line;
     // Read and discard the header line
-    getline(receiverFile, line);
+    getline(donorFile, line);
 
-    while (getline(receiverFile, line)) {
+    while (getline(donorFile, line)) {
         istringstream iss(line);
-        string id, name, contact, organType, age, bloodType, address, city, state, country, zipCode, medicalHistory, insurance, consentForm, registrationDate;
+        string id, name, organType, contact, age, bloodType, city, state, country, address, zipCode, medicalHistory, insurance, consentForm, registrationDate;
 
         getline(iss, id, ',');
         getline(iss, name, ',');
-        getline(iss, contact, ',');
         getline(iss, organType, ',');
+        getline(iss, contact, ',');
         getline(iss, age, ',');
         getline(iss, bloodType, ',');
-        getline(iss, address, ',');
         getline(iss, city, ',');
         getline(iss, state, ',');
         getline(iss, country, ',');
+        getline(iss, address, ',');
         getline(iss, zipCode, ',');
         getline(iss, medicalHistory, ',');
         getline(iss, insurance, ',');
         getline(iss, consentForm, ',');
         getline(iss, registrationDate, ',');
 
-        receiverList = createReceiver(receiverList, id, name, contact, organType, age, bloodType, address, city, state, country, zipCode, medicalHistory, insurance, consentForm, registrationDate);
+        donorList = createDonor(donorList, id, name, organType, contact, age, bloodType, city, state, country, address, zipCode, medicalHistory, insurance, consentForm, registrationDate);
     }
 
     while (true) {
         cout << "Choose an option:" << endl;
-        cout << "1. Search Receivers" << endl;
+        cout << "1. Search Donors" << endl;
         cout << "2. Exit" << endl;
 
         string choice;
@@ -173,8 +173,8 @@ int main() {
             cout << "Enter the city: ";
             cin >> city;
 
-            cout << "Matching Receivers:" << endl;
-            searchAndPrintMatches(receiverList, organType, bloodType, city);
+            cout << "Matching Donors:" << endl;
+            searchAndPrintMatches(donorList, organType, bloodType, city);
         } else if (choice == "2") {
             break;
         } else {
@@ -183,9 +183,9 @@ int main() {
     }
 
     // Clean up: free memory
-    Receiver* current = receiverList;
+    Donor* current = donorList;
     while (current != nullptr) {
-        Receiver* temp = current;
+        Donor* temp = current;
         current = current->next;
         delete temp;
     }
