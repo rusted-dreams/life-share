@@ -1,3 +1,2 @@
-﻿
-DonorID,DonorName,OrganType,DonorContact,DonorAge,DonorBloodType,DonorCity,DonorState,DonorCountry,DonorAddress,DonorZipCode,DonorMedicalHistory,DonorInsurance,DonorConsentForm,DonorRegistrationDate
-YH33KO,yash,kidney,9350407133,20,O+,ynr,ynr,ind,ynr,135001,none,yes,signed,01/11/2023
+﻿DonorID,DonorName,OrganType,DonorContact,DonorAge,DonorBloodType,DonorCity,DonorState,DonorCountry,DonorAddress,DonorZipCode,DonorMedicalHistory,DonorInsurance,DonorConsentForm,DonorRegistrationDate
+YH33KO,yash,Kidney,9350407133,20,O+,ynr,ynr,ind,ynr,135001,none,yes,signed,1/11/2023
