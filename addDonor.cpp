@@ -115,7 +115,6 @@ int main()
     system("cls");
     while (true)
     {
-    start:
         DonorDetails donor;
         system("cls");
         system("color 4f");
@@ -174,10 +173,10 @@ int main()
 
             // Write donor details to CSV file and update in-memory database
             write_donor_to_csv(donor);
-            cout << "donor registered succesfully!";
-            Sleep(2000);
-            system("cls");
-            goto start;
+            cout << "donor registered succesfully!" << endl;
+            cout << "press enter to continue!";
+            cin.get();
+            break;
         case 2:
             cout << "Donor registration cancelled. Goodbye!" << endl;
             system("welcome.exe");

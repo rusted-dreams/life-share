@@ -98,16 +98,17 @@ void write_to_csv(const ReceiverDetails& receiver) {
     receiverDatabase.push_back(updatedReceiver);
 
     system("CLS");
-    system("color 3F");// Clear the screen and set colors again
+    system("header.exe");// Clear the screen and set colors again
     cout << "Registration successful. Details have been saved to " << CSV_FILE_PATH << endl;
 }
 
 void display_menu() {
     system("CLS");
     system("color 3F");
+    system("header.exe");
     cout << "Organ Receiver Registration Menu" << endl;
     cout << "1. Register as an organ receiver" << endl;
-    cout << "2. Exit" << endl;
+    cout << "2. Main Menu" << endl;
     cout << "Enter your choice: ";
 }
 
@@ -121,6 +122,7 @@ int main() {
         int choice;
         cin >> choice;
         system("CLS");
+        system("header.exe");
 
         switch (choice) {
             case 1:
@@ -169,9 +171,8 @@ int main() {
 
             case 2:
                 system("CLS");
-                system("color 3F");
-                cout << "Goodbye!" << endl;
-                return 0;
+                system("welcome.exe");
+                break;
 
             default:
                 cout << "Invalid choice. Please try again." << endl;

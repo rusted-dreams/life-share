@@ -48,7 +48,8 @@ main_menu:
             return 0;
         default:
             cout << "Invalid chocice please choose a valid option!" << endl;
-            Sleep(1000);
+            cout << "Press enter to continue...";
+            cin.get();
             goto main_menu;
         }
     }
