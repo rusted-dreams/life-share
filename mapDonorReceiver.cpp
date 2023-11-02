@@ -102,22 +102,20 @@ private:
 
     // Helper function to search for donors based on blood type and organ type
     void search(Node* node, const string& bloodType, const string& organType, vector<DonorDetails>& result) const {
-        if (node == nullptr) {
-            return;
-        }
-
-        if (node->data.DonorBloodType == bloodType && node->data.OrganType == organType) {
-            result.push_back(node->data);
-        }
-
-        if (bloodType < node->data.DonorBloodType || (bloodType == node->data.DonorBloodType && organType < node->data.OrganType)) {
-            search(node->left, bloodType, organType, result);
-        }
-
-        if (bloodType > node->data.DonorBloodType || (bloodType == node->data.DonorBloodType && organType > node->data.OrganType)) {
-            search(node->right, bloodType, organType, result);
-        }
+    if (node == nullptr) {
+        return;
     }
+
+    search(node->left, bloodType, organType, result);
+    
+
+    if (node->data.DonorBloodType == bloodType && node->data.OrganType == organType) {
+        result.push_back(node->data);
+    }
+
+    search(node->right, bloodType, organType, result);
+    }   
+
 
 public:
     DonorBST() : root(nullptr) {}
@@ -134,39 +132,175 @@ public:
         return result;
     }
 };
+class ReceiverBST {
+private:
+    struct Node {
+        ReceiverDetails data;
+        Node* left;
+        Node* right;
+        Node(const ReceiverDetails& receiver) : data(receiver), left(nullptr), right(nullptr) {}
+    };
 
-// Function to print a table of details excluding address-related columns
+    Node* root;
+
+    // Helper function to insert a receiver into the BST
+    Node* insert(Node* node, const ReceiverDetails& receiver) {
+        if (node == nullptr) {
+            return new Node(receiver);
+        }
+
+        if (receiver.ReceiverID < node->data.ReceiverID) {
+            node->left = insert(node->left, receiver);
+        } else if (receiver.ReceiverID > node->data.ReceiverID) {
+            node->right = insert(node->right, receiver);
+        }
+
+        return node;
+    }
+
+    // Helper function to search for receivers based on blood type and organ type
+    void search(Node* node, const string& bloodType, const string& organType, vector<ReceiverDetails>& result) const {
+        if (node == nullptr) {
+            return;
+        }
+
+        search(node->left, bloodType, organType, result);
+        
+
+        if (node->data.ReceiverBloodType == bloodType && node->data.OrganType == organType) {
+            result.push_back(node->data);
+        }
+
+        search(node->right, bloodType, organType, result);
+    }
+
+
+public:
+    ReceiverBST() : root(nullptr) {}
+
+    // Function to insert a receiver into the BST
+    void insert(const ReceiverDetails& receiver) {
+        root = insert(root, receiver);
+    }
+
+    // Function to search for receivers based on blood type and organ type
+    vector<ReceiverDetails> search(const string& bloodType, const string& organType) const {
+        vector<ReceiverDetails> result;
+        search(root, bloodType, organType, result);
+        return result;
+    }
+};
+
+
+// Function to print a table of details with dynamic spacing
 void printTable(const vector<DonorDetails>& donors, const vector<ReceiverDetails>& receivers) {
-    cout << setw(6) << "DonorID" << setw(15) << "DonorName"
-         << setw(15) << "OrganType" << setw(15) << "ContactNo"
-         << setw(12) << "Age" << setw(15) << "BloodType"
-         << setw(18) << "MedicalHist." << setw(15) << "Insurance"
-         << setw(20) << "ConsentForm" << setw(25) << "RegistrationDate" << endl;
+    // Function to calculate the maximum length of each column
+    auto calculateColumnWidth = [](const string& columnName, const vector<DonorDetails>& donors, const vector<ReceiverDetails>& receivers) {
+        size_t maxColumnWidth = columnName.length();
 
+        for (const auto& donor : donors) {
+            size_t dataLength = 0;
+            if (columnName == "DonorID") dataLength = donor.DonorID.length();
+            else if (columnName == "DonorName") dataLength = donor.DonorName.length();
+            else if (columnName == "OrganType") dataLength = donor.OrganType.length();
+            else if (columnName == "DonorContact") dataLength = donor.DonorContact.length();
+            else if (columnName == "DonorAge") dataLength = donor.DonorAge.length();
+            else if (columnName == "DonorBloodType") dataLength = donor.DonorBloodType.length();
+            else if (columnName == "DonorCity") dataLength = donor.DonorCity.length();
+            else if (columnName == "DonorState") dataLength = donor.DonorState.length();
+            else if (columnName == "DonorCountry") dataLength = donor.DonorCountry.length();
+            else if (columnName == "DonorZipCode") dataLength = donor.DonorZipCode.length();
+            else if (columnName == "DonorMedicalHistory") dataLength = donor.DonorMedicalHistory.length();
+            else if (columnName == "DonorInsurance") dataLength = donor.DonorInsurance.length();
+            else if (columnName == "DonorConsentForm") dataLength = donor.DonorConsentForm.length();
+            else if (columnName == "DonorRegistrationDate") dataLength = donor.DonorRegistrationDate.length();
+
+            if (dataLength > maxColumnWidth) {
+                maxColumnWidth = dataLength;
+            }
+        }
+
+        for (const auto& receiver : receivers) {
+            size_t dataLength = 0;
+            if (columnName == "ReceiverID") dataLength = receiver.ReceiverID.length();
+            else if (columnName == "ReceiverName") dataLength = receiver.ReceiverName.length();
+            else if (columnName == "ReceiverContact") dataLength = receiver.ReceiverContact.length();
+            else if (columnName == "OrganType") dataLength = receiver.OrganType.length();
+            else if (columnName == "ReceiverAge") dataLength = receiver.ReceiverAge.length();
+            else if (columnName == "ReceiverBloodType") dataLength = receiver.ReceiverBloodType.length();
+            else if (columnName == "ReceiverMedicalHistory") dataLength = receiver.ReceiverMedicalHistory.length();
+            else if (columnName == "ReceiverInsurance") dataLength = receiver.ReceiverInsurance.length();
+            else if (columnName == "ReceiverConsentForm") dataLength = receiver.ReceiverConsentForm.length();
+            else if (columnName == "ReceiverRegistrationDate") dataLength = receiver.ReceiverRegistrationDate.length();
+
+            if (dataLength > maxColumnWidth) {
+                maxColumnWidth = dataLength;
+            }
+        }
+
+        return maxColumnWidth;
+    };
+
+    // Print the column names for donors
+    cout << left;  // Align the text to the left
+    cout << setw(calculateColumnWidth("DonorID", donors, receivers)+5) << "DonorID";
+    cout << setw(calculateColumnWidth("DonorName", donors, receivers)+5) << "DonorName";
+    cout << setw(calculateColumnWidth("OrganType", donors, receivers)+5) << "OrganType";
+    cout << setw(calculateColumnWidth("DonorContact", donors, receivers)+5) << "DonorContact";
+    cout << setw(calculateColumnWidth("DonorAge", donors, receivers)+2) << "Age";
+    cout << setw(calculateColumnWidth("DonorBloodType", donors, receivers)+3) << "BloodType";
+    cout << setw(calculateColumnWidth("DonorMedicalHistory", donors, receivers)+3) << "MedicalHistory";
+    cout << setw(calculateColumnWidth("DonorInsurance", donors, receivers)+3) << "Insurance";
+    cout << setw(calculateColumnWidth("DonorConsentForm", donors, receivers)+3) << "ConsentForm";
+    cout << setw(calculateColumnWidth("DonorRegistrationDate", donors, receivers)+3) << "Reg. Date";
+    cout << endl;
+
+    // Print the donor details directly under the respective column names
     for (const auto& donor : donors) {
-        cout << setw(7) << donor.DonorID << setw(20) << donor.DonorName
-             << setw(15) << donor.OrganType << setw(15) << donor.DonorContact
-             << setw(7) << donor.DonorAge << setw(7) << donor.DonorBloodType
-             << setw(18) << donor.DonorMedicalHistory << setw(15) << donor.DonorInsurance
-             << setw(20) << donor.DonorConsentForm << setw(25) << donor.DonorRegistrationDate << endl;
+        cout << setw(calculateColumnWidth("DonorID", donors, receivers)+5) << donor.DonorID;
+        cout << setw(calculateColumnWidth("DonorName", donors, receivers)+5) << donor.DonorName;
+        cout << setw(calculateColumnWidth("OrganType", donors, receivers)+5) << donor.OrganType;
+        cout << setw(calculateColumnWidth("DonorContact", donors, receivers)+5) << donor.DonorContact;
+        cout << setw(calculateColumnWidth("DonorAge", donors, receivers)+2) << donor.DonorAge;
+        cout << setw(calculateColumnWidth("DonorBloodType", donors, receivers)+3) << donor.DonorBloodType;
+        cout << setw(calculateColumnWidth("DonorMedicalHistory", donors, receivers)+3) << donor.DonorMedicalHistory;
+        cout << setw(calculateColumnWidth("DonorInsurance", donors, receivers)+3) << donor.DonorInsurance;
+        cout << setw(calculateColumnWidth("DonorConsentForm", donors, receivers)+3) << donor.DonorConsentForm;
+        cout << setw(calculateColumnWidth("DonorRegistrationDate", donors, receivers)+3) << donor.DonorRegistrationDate;
+        cout << endl;
     }
 
     cout << "\n\n";
 
-    cout << setw(6) << "Rec. ID" << setw(15) << "Rec. Name"
-         << setw(15) << "OrganType"<< setw(15) << "ContactNo" 
-         << setw(12) << "Age" << setw(15) << "BloodType"
-         << setw(18) << "MedicalHist." << setw(15) << "Insurance"
-         << setw(20) << "ConsentForm" << setw(25) << "RegistrationDate" << endl;
+    // Print the column names for receivers
+    cout << setw(calculateColumnWidth("ReceiverID", donors, receivers)+2) << "Rec. ID";
+    cout << setw(calculateColumnWidth("ReceiverName", donors, receivers)+2) << "Rec. Name";
+    cout << setw(calculateColumnWidth("OrganType", donors, receivers)+5) << "OrganType";
+    cout << setw(calculateColumnWidth("ReceiverContact", donors, receivers)+2) << "Rec. Contact";
+    cout << setw(calculateColumnWidth("ReceiverAge", donors, receivers)-1) << "Age";
+    cout << setw(calculateColumnWidth("ReceiverBloodType", donors, receivers)) << "BloodType";
+    cout << setw(calculateColumnWidth("ReceiverMedicalHistory", donors, receivers)) << "MedicalHistory";
+    cout << setw(calculateColumnWidth("ReceiverInsurance", donors, receivers)) << "Insurance";
+    cout << setw(calculateColumnWidth("ReceiverConsentForm", donors, receivers)) << "ConsentForm";
+    cout << setw(calculateColumnWidth("ReceiverRegistrationDate", donors, receivers)) << "Reg. Date";
+    cout << endl;
 
+    // Print the receiver details directly under the respective column names
     for (const auto& receiver : receivers) {
-        cout << setw(6) << receiver.ReceiverID << setw(20) << receiver.ReceiverName
-             << setw(15) << receiver.OrganType << setw(15) << receiver.ReceiverContact 
-             << setw(7) << receiver.ReceiverAge << setw(7) << receiver.ReceiverBloodType
-             << setw(18) << receiver.ReceiverMedicalHistory << setw(15) << receiver.ReceiverInsurance
-             << setw(20) << receiver.ReceiverConsentForm << setw(25) << receiver.ReceiverRegistrationDate << endl;
+        cout << setw(calculateColumnWidth("ReceiverID", donors, receivers)+2) << receiver.ReceiverID;
+        cout << setw(calculateColumnWidth("ReceiverName", donors, receivers)+2) << receiver.ReceiverName;
+        cout << setw(calculateColumnWidth("OrganType", donors, receivers)+5) << receiver.OrganType;
+        cout << setw(calculateColumnWidth("ReceiverContact", donors, receivers)+2) << receiver.ReceiverContact;
+        cout << setw(calculateColumnWidth("ReceiverAge", donors, receivers)-1) << receiver.ReceiverAge;
+        cout << setw(calculateColumnWidth("ReceiverBloodType", donors, receivers)) << receiver.ReceiverBloodType;
+        cout << setw(calculateColumnWidth("ReceiverMedicalHistory", donors, receivers)) << receiver.ReceiverMedicalHistory;
+        cout << setw(calculateColumnWidth("ReceiverInsurance", donors, receivers)) << receiver.ReceiverInsurance;
+        cout << setw(calculateColumnWidth("ReceiverConsentForm", donors, receivers)) << receiver.ReceiverConsentForm;
+        cout << setw(calculateColumnWidth("ReceiverRegistrationDate", donors, receivers)) << receiver.ReceiverRegistrationDate;
+        cout << endl;
     }
 }
+
 
 
 // Function to write mapping details to details.csv
@@ -213,50 +347,17 @@ void writeMappingToCSV(const DonorDetails& donor, const ReceiverDetails& receive
     cout << "Mapping successful. Details have been saved to " << DETAILS_CSV_FILE_PATH << endl;
 }
 
-// Function to remove a record from a CSV file based on the ID
-void removeRecordFromCSV(const string& filePath, const string& recordID) {
-    ifstream inputFile(filePath);
-    if (!inputFile.is_open()) {
-        cerr << "Error: Could not open the CSV file for reading." << endl;
-        return;
-    }
-
-    ofstream tempFile("temp.csv");
-    if (!tempFile.is_open()) {
-        cerr << "Error: Could not create a temporary file." << endl;
-        return;
-    }
-
-    // Copy lines to temp file excluding the record with the given ID
-    string line;
-    while (getline(inputFile, line)) {
-        istringstream ss(line);
-        string currentID;
-        getline(ss, currentID, ',');
-
-        if (currentID != recordID) {
-            tempFile << line << "\n";
-        }
-    }
-
-    inputFile.close();
-    tempFile.close();
-
-    // Replace the original file with the temp file
-    if (rename("temp.csv", filePath.c_str()) != 0) {
-        cerr << "Error: Could not replace the original CSV file." << endl;
-    }
-}
 
 // Function to search for and display matching donors based on blood type and organ type
-void searchAndDisplayMatches(const DonorBST& donorTree, const vector<ReceiverDetails>& receivers, const string& bloodType, const string& organType) {
+void searchAndDisplayMatches(const DonorBST& donorTree,const ReceiverBST& receiverTree,  const string& bloodType, const string& organType) {
     // Search for matching donors
     vector<DonorDetails> matchingDonors = donorTree.search(bloodType, organType);
+    vector<ReceiverDetails> matchingReceivers = receiverTree.search(bloodType, organType);
 
     // Print the table of matching details
-    printTable(matchingDonors, receivers);
+    printTable(matchingDonors, matchingReceivers);
 
-    if (!matchingDonors.empty()) {
+    if (!matchingDonors.empty() && !matchingReceivers.empty()) {
         // Ask the user if they want to proceed with mapping
         cout << "Do you want to map a donor with a receiver? (yes/no): ";
         string mapChoice;
@@ -277,33 +378,32 @@ void searchAndDisplayMatches(const DonorBST& donorTree, const vector<ReceiverDet
                 return donor.DonorID == donorID;
             });
 
-            auto receiverIt = find_if(receivers.begin(), receivers.end(), [&receiverID](const ReceiverDetails& receiver) {
+            auto receiverIt = find_if(matchingReceivers.begin(), matchingReceivers.end(), [&receiverID](const ReceiverDetails& receiver) {
                 return receiver.ReceiverID == receiverID;
             });
 
-            if (donorIt != matchingDonors.end() && receiverIt != receivers.end()) {
+            if (donorIt != matchingDonors.end() && receiverIt != matchingReceivers.end()) {
                 // Write mapping details to details.csv
                 writeMappingToCSV(*donorIt, *receiverIt);
-
-                // Remove donor from donor.csv
-                removeRecordFromCSV(DONOR_CSV_FILE_PATH, donorID);
-
-                // Remove receiver from receiver.csv
-                removeRecordFromCSV(RECEIVER_CSV_FILE_PATH, receiverID);
             } else {
                 cout << "Invalid DonorID or ReceiverID. Mapping failed." << endl;
             }
         } else {
             cout << "Mapping skipped. No changes made to CSV files." << endl;
         }
-    } else {
+    } else if(matchingDonors.empty()){
         cout << "No matching donors found. Mapping skipped." << endl;
+    } else if(matchingReceivers.empty()){
+        cout << "No matching receivers found. Mapping skipped." << endl;
+    }
+    else{
+        cout << "No matching receivers and donors found. Mapping skipped." << endl;
     }
 }
 
 int main() {
     DonorBST donorTree;
-
+    ReceiverBST receiverTree;
     // Read donor data and build the BST
     ifstream donorFile(DONOR_CSV_FILE_PATH);
     if (donorFile.is_open()) {
@@ -359,16 +459,13 @@ int main() {
             getline(ss, receiver.ReceiverInsurance, ',');
             getline(ss, receiver.ReceiverConsentForm, ',');
             getline(ss, receiver.ReceiverRegistrationDate, ',');
-            receivers.push_back(receiver);
+            receiverTree.insert(receiver);
         }
         receiverFile.close();
     } else {
         cerr << "Error: Unable to open receiver CSV file." << endl;
         return 1;
     }
-
-    // Print the table of details
-    printTable({}, {});
 
     // Ask the user if they want to map and search for matches
     cout << "Do you want to map a donor with a receiver? (yes/no): ";
@@ -386,7 +483,7 @@ int main() {
         cin >> organType;
 
         // Search for matching donors and display results
-        searchAndDisplayMatches(donorTree, receivers, bloodType, organType);
+        searchAndDisplayMatches(donorTree,receiverTree, bloodType, organType);
     } else {
         cout << "Mapping skipped. No changes made to CSV files." << endl;
     }
