@@ -3,18 +3,23 @@
 using namespace std;
 
 void welcomeMessage() {
+    system("chcp 65001");
     system("cls");
-    char title[] = "\033[1;36m\t\t\t\t\t----------------------------\n\t\t\t\t\t\tLIFE SHARE\n\t\t\t\t\t----------------------------\033[0m";
+    char title[] = "\t\t\t\t\t----------------------------\n\t\t\t\t\t\tLIFE SHARE\n\t\t\t\t\t----------------------------";
     char *ptr = title;
     for (int i = 0; i < sizeof(title); i++)
     {
         cout << *(ptr + i);
         Sleep(10);
     }
-    cout << endl;
 }
 
 int mainMenu() {
+main_menu:
+    system("color 2f");
+    welcomeMessage();
+    system("header.exe");
+    cout << endl;
     cout << "1: Register Donor" << endl;
     cout << "2: Register Receiver" << endl;
     cout << "3: Search Donor" << endl;
@@ -42,13 +47,13 @@ int mainMenu() {
         case 6:
             return 0;
         default:
-            cout << "Invalid choice please choose again!!" << endl;
-            return 0;
+            cout << "Invalid chocice please choose a valid option!" << endl;
+            Sleep(1000);
+            goto main_menu;
         }
     }
 }
 
 int main(){
-    welcomeMessage();
     mainMenu();
 }

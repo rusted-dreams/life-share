@@ -157,6 +157,8 @@ int main() {
     }
 
     while (true) {
+        system("cls");
+        system("color 2f");
         cout << "Choose an option:" << endl;
         cout << "1. Search Donors" << endl;
         cout << "2. Exit" << endl;
