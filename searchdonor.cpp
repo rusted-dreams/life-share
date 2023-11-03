@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
+#include <windows.h>
 
 using namespace std;
 
@@ -73,6 +74,8 @@ Donor* createDonor(Donor* head, const string& id, const string& name, const stri
 void searchAndPrintMatches(Donor* head, const string& organType, const string& bloodType, const string& city) {
     if (head == nullptr) {
         cout << "No matching donors found." << endl;
+        cout << "press enter to continue...";
+        cin.get();
         return;
     }
 
@@ -108,6 +111,8 @@ void searchAndPrintMatches(Donor* head, const string& organType, const string& b
             cout << "Registration Date: " << current->RegistrationDate << endl;
             cout << "--------------------------------" << endl;
             matchFound = true;
+            cout << "press enter to continue...";
+            cin.get();
         }
 
         current = current->next;
@@ -115,10 +120,12 @@ void searchAndPrintMatches(Donor* head, const string& organType, const string& b
 
     if (!matchFound) {
         cout << "No matching donors found." << endl;
+        cout << "press enter to continue...";
     }
 }
 
 int main() {
+    system("color 4f");
     Donor* donorList = nullptr;
 
     // Load data from donor.csv file
@@ -158,15 +165,17 @@ int main() {
 
     while (true) {
         system("cls");
-        system("color 2f");
+        system("header.exe");
         cout << "Choose an option:" << endl;
         cout << "1. Search Donors" << endl;
-        cout << "2. Exit" << endl;
+        cout << "2. Main Menu" << endl;
 
         string choice;
         cin >> choice;
 
         if (choice == "1") {
+            system("cls");
+            system("header.exe");
             string organType, bloodType, city;
             cout << "Enter the organ type (e.g., heart, kidney, etc.): ";
             cin >> organType;
@@ -177,7 +186,10 @@ int main() {
 
             cout << "Matching Donors:" << endl;
             searchAndPrintMatches(donorList, organType, bloodType, city);
+            cout << "press enter to continue...";
+            cin.get();
         } else if (choice == "2") {
+            system("welcome.exe");
             break;
         } else {
             cout << "Invalid choice. Please try again." << endl;
