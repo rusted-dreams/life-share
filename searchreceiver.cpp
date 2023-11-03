@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <algorithm>
-
+#include <windows.h>
 using namespace std;
 
 // Structure to represent a receiver
@@ -91,6 +91,7 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
         if (receiverOrganType.find(normalizedOrganType) != string::npos &&
             receiverBloodType.find(normalizedBloodType) != string::npos &&
             receiverCity.find(normalizedCity) != string::npos) {
+                system("header.exe");
             cout << "Receiver ID: " << current->ID << endl;
             cout << "Name: " << current->Name << endl;
             cout << "Organ Type: " << current->OrganType << endl;
@@ -108,6 +109,8 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
             cout << "Registration Date: " << current->RegistrationDate << endl;
             cout << "--------------------------------" << endl;
             matchFound = true;
+            cout << "press enter to continue...";
+            cin.get();
         }
 
         current = current->next;
@@ -115,10 +118,13 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
 
     if (!matchFound) {
         cout << "No matching receivers found." << endl;
+        cout << "press enter to continue...";
+        cin.get();
     }
 }
 
 int main() {
+    system("color 3f");
     Receiver* receiverList = nullptr;
 
     // Load data from receiver.csv file
@@ -157,6 +163,8 @@ int main() {
     }
 
     while (true) {
+        system("cls");
+        system("header.exe");
         cout << "Choose an option:" << endl;
         cout << "1. Search Receivers" << endl;
         cout << "2. Exit" << endl;
@@ -165,6 +173,8 @@ int main() {
         cin >> choice;
 
         if (choice == "1") {
+            system("cls");
+            system("header.exe");
             string organType, bloodType, city;
             cout << "Enter the organ type (e.g., heart, kidney, etc.): ";
             cin >> organType;
@@ -175,7 +185,10 @@ int main() {
 
             cout << "Matching Receivers:" << endl;
             searchAndPrintMatches(receiverList, organType, bloodType, city);
+            cout << "press enter to continue...";
+            cin.get();
         } else if (choice == "2") {
+            system("welcome.exe");
             break;
         } else {
             cout << "Invalid choice. Please try again." << endl;
