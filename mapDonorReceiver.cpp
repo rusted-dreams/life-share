@@ -298,6 +298,8 @@ void printTable(const vector<DonorDetails>& donors, const vector<ReceiverDetails
         cout << setw(calculateColumnWidth("ReceiverConsentForm", donors, receivers)) << receiver.ReceiverConsentForm;
         cout << setw(calculateColumnWidth("ReceiverRegistrationDate", donors, receivers)) << receiver.ReceiverRegistrationDate;
         cout << endl;
+        cout << "press enter to continue...";
+        cin.get();
     }
 }
 
@@ -345,6 +347,8 @@ void writeMappingToCSV(const DonorDetails& donor, const ReceiverDetails& receive
                 << receiver.ReceiverRegistrationDate << "\n";
 
     cout << "Mapping successful. Details have been saved to " << DETAILS_CSV_FILE_PATH << endl;
+    cout << "press enter to continue...";
+    cin.get();
 }
 
 
@@ -359,11 +363,11 @@ void searchAndDisplayMatches(const DonorBST& donorTree,const ReceiverBST& receiv
 
     if (!matchingDonors.empty() && !matchingReceivers.empty()) {
         // Ask the user if they want to proceed with mapping
-        cout << "Do you want to map a donor with a receiver? (yes/no): ";
+        cout << "Do you want to map a donor with a receiver? (y/n): ";
         string mapChoice;
         cin >> mapChoice;
 
-        if (mapChoice == "yes") {
+        if (mapChoice == "y") {
             // Ask for the IDs of the donor and receiver to map
             cout << "Enter the DonorID: ";
             string donorID;
@@ -387,21 +391,39 @@ void searchAndDisplayMatches(const DonorBST& donorTree,const ReceiverBST& receiv
                 writeMappingToCSV(*donorIt, *receiverIt);
             } else {
                 cout << "Invalid DonorID or ReceiverID. Mapping failed." << endl;
+                cout << "press enter to go to main menu...";
+                cin.get();
             }
         } else {
             cout << "Mapping skipped. No changes made to CSV files." << endl;
+            cout << "press enter to go to main menu...";
+            cin.get();
+            system("welcome.exe");
         }
     } else if(matchingDonors.empty()){
         cout << "No matching donors found. Mapping skipped." << endl;
+        cout << "press enter to go to main menu...";
+        cin.get();
+        system("welcome.exe");
+
     } else if(matchingReceivers.empty()){
         cout << "No matching receivers found. Mapping skipped." << endl;
+        cout << "press enter to go to main menu...";
+        cin.get();
+        system("welcome.exe");
     }
     else{
         cout << "No matching receivers and donors found. Mapping skipped." << endl;
+        cout << "press enter to go to main menu...";
+        cin.get();
+        system("welcome.exe");
     }
 }
 
 int main() {
+    system("cls");
+    system("color 6f");
+    system("header.exe");
     DonorBST donorTree;
     ReceiverBST receiverTree;
     // Read donor data and build the BST
@@ -468,12 +490,16 @@ int main() {
     }
 
     // Ask the user if they want to map and search for matches
-    cout << "Do you want to map a donor with a receiver? (yes/no): ";
-    string mapChoice;
+    cout << "1: map a donor with a receiver"<<endl;
+    cout << "2: Main Menu" << endl << endl;
+    int mapChoice;
+    cout << "enter your choice: ";
     cin >> mapChoice;
 
-    if (mapChoice == "yes") {
+    if (mapChoice == 1) {
         // Ask for blood type and organ type
+        system("cls");
+        system("header.exe");
         cout << "Enter the blood type: ";
         string bloodType;
         cin >> bloodType;
@@ -481,11 +507,15 @@ int main() {
         cout << "Enter the organ type: ";
         string organType;
         cin >> organType;
+        cout << endl << endl;
 
         // Search for matching donors and display results
         searchAndDisplayMatches(donorTree,receiverTree, bloodType, organType);
     } else {
         cout << "Mapping skipped. No changes made to CSV files." << endl;
+        cout<< "press enter to go to main menu...";
+        cin.get();
+        system("welcome.exe");
     }
 
     return 0;
