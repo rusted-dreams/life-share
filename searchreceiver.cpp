@@ -91,7 +91,7 @@ void searchAndPrintMatches(Receiver* head, const string& organType, const string
         if (receiverOrganType.find(normalizedOrganType) != string::npos &&
             receiverBloodType.find(normalizedBloodType) != string::npos &&
             receiverCity.find(normalizedCity) != string::npos) {
-                system("header.exe");
+                // system("header.exe");
             cout << "Receiver ID: " << current->ID << endl;
             cout << "Name: " << current->Name << endl;
             cout << "Organ Type: " << current->OrganType << endl;
